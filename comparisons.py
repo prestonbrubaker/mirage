@@ -69,11 +69,11 @@ info_label = tk.Label(root, text="Decisions made: 0, Elapsed time: 0.0 seconds",
 info_label.pack(side="top", pady=(10, 20))  # Adjust padding as needed
 
 # Initialize photo labels with possible background or padding for neatness
-left_photo_label = tk.Label(root, bg='light blue')
-left_photo_label.pack(side="left", padx=10)
+left_photo_label = tk.Label(root, bg='grey')
+left_photo_label.pack(side="left", padx=100)
 
-right_photo_label = tk.Label(root, bg='light blue')
-right_photo_label.pack(side="right", padx=10)
+right_photo_label = tk.Label(root, bg='grey')
+right_photo_label.pack(side="right", padx=100)
 
 # Bind key press events
 root.bind("<KeyPress>", on_key_press)
