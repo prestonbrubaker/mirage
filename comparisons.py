@@ -4,7 +4,6 @@ import os
 import random
 import time
 
-
 # Program start time
 start_time = time.time()
 
@@ -33,7 +32,7 @@ def update_photos():
     
     # Update info label with current iteration and elapsed time
     elapsed_time = time.time() - start_time
-    info_label.config(text=f"Decisions made: {it_C}, Elapsed time: {elapsed_time:.2f} seconds")
+    info_label.config(text=f"Decisions made: {it_C}, Elapsed time: {elapsed_time:.1f} seconds")
 
 def choose_photo(choice):
     global it_C
@@ -53,22 +52,28 @@ def on_key_press(event):
 
 # Initialize tkinter window
 root = tk.Tk()
-root.title("Choose a Photo")
+root.title("Choose a Photo: 'n' for left, 'm' for right")
+
+# Set window size
+root.geometry("800x600")  # Example size, adjust as needed
+
+# Customize background
+root.configure(bg='light blue')  # Example color
 
 # Load photos from the "photos" directory
 photos_path = "photos"
 photos = [f for f in os.listdir(photos_path) if os.path.isfile(os.path.join(photos_path, f))]
 
-# Initialize photo labels
-left_photo_label = tk.Label(root)
-left_photo_label.pack(side="left")
+# Initialize info label and pack it first to be at the top
+info_label = tk.Label(root, text="Decisions made: 0, Elapsed time: 0.0 seconds", bg='light blue')
+info_label.pack(side="top", pady=(10, 20))  # Adjust padding as needed
 
-right_photo_label = tk.Label(root)
-right_photo_label.pack(side="right")
+# Initialize photo labels with possible background or padding for neatness
+left_photo_label = tk.Label(root, bg='light blue')
+left_photo_label.pack(side="left", padx=10)
 
-# Initialize info label
-info_label = tk.Label(root, text="Decisions made: 0, Elapsed time: 0.00 seconds")
-info_label.pack(side="bottom")
+right_photo_label = tk.Label(root, bg='light blue')
+right_photo_label.pack(side="right", padx=10)
 
 # Bind key press events
 root.bind("<KeyPress>", on_key_press)
