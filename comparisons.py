@@ -73,8 +73,8 @@ left_frame = tk.Frame(root, bg='light blue')
 right_frame = tk.Frame(root, bg='light blue')
 
 # Pack frames with desired margins
-left_frame.pack(side="left", fill="both", expand=True, padx=(100, 0))  # Margin on the left
-right_frame.pack(side="right", fill="both", expand=True, padx=(0, 100))  # Margin on the right
+left_frame.pack(side="left", fill="both", expand=True, padx=(200, 0))  # Margin on the left
+right_frame.pack(side="right", fill="both", expand=True, padx=(0, 200))  # Margin on the right
 
 # Initialize photo labels within the frames
 left_photo_label = tk.Label(left_frame, bg='grey')
