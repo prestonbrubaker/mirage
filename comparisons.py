@@ -77,10 +77,10 @@ left_frame.pack(side="left", fill="both", expand=True, padx=(50, 0))  # Margin o
 right_frame.pack(side="right", fill="both", expand=True, padx=(0, 50))  # Margin on the right
 
 # Initialize photo labels within the frames
-left_photo_label = tk.Label(left_frame, bg='white')
+left_photo_label = tk.Label(left_frame, bg='black')
 left_photo_label.pack(fill="both", expand=True)
 
-right_photo_label = tk.Label(right_frame, bg='white')
+right_photo_label = tk.Label(right_frame, bg='black')
 right_photo_label.pack(fill="both", expand=True)
 
 # Bind key press events
