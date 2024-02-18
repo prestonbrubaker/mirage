@@ -53,40 +53,32 @@ def on_key_press(event):
 # Initialize tkinter window
 root = tk.Tk()
 root.title("Choose a Photo: 'n' for left, 'm' for right")
-root.geometry("800x600")
+root.geometry("800x600")  # Adjust as needed
 root.configure(bg='grey')
 
 # Load photos from the "photos" directory
 photos_path = "photos"
 photos = [f for f in os.listdir(photos_path) if os.path.isfile(os.path.join(photos_path, f))]
 
-# Initialize info label and pack it first to be at the top
+# Initialize info label at the top
 info_label = tk.Label(root, text="Decisions made: 0, Elapsed time: 0.0 seconds", bg='grey')
-info_label.pack(side="top", pady=(10, 20))
+info_label.grid(row=0, column=0, columnspan=3, pady=(10, 20))
 
-# Create a container frame for photo frames
-container_frame = tk.Frame(root, bg='grey')
-container_frame.pack(expand=True, fill='both')
+# Container frame for the photos
+photo_frame = tk.Frame(root, bg='grey')
+photo_frame.grid(row=1, column=0, columnspan=3)
 
-# Create frames for each photo within the container frame
-left_frame = tk.Frame(container_frame, bg='light blue')
-right_frame = tk.Frame(container_frame, bg='light blue')
+# Initialize photo labels within the container frame
+left_photo_label = tk.Label(photo_frame, bg='grey')
+left_photo_label.grid(row=0, column=1, padx=(0, 5))  # Adjust padx as needed for spacing
 
-# Pack the photo frames with a specific gap
-left_frame.pack(side="left", fill="both", expand=True, padx=(1, 5))
-right_frame.pack(side="left", fill="both", expand=True, padx=(5, 1))
-
-# Initialize photo labels within the frames
-left_photo_label = tk.Label(left_frame, bg='grey')
-left_photo_label.pack(fill="both", expand=True)
-
-right_photo_label = tk.Label(right_frame, bg='grey')
-right_photo_label.pack(fill="both", expand=True)
+right_photo_label = tk.Label(photo_frame, bg='grey')
+right_photo_label.grid(row=0, column=2, padx=(5, 0))  # Adjust padx as needed for spacing
 
 # Bind key press events
 root.bind("<KeyPress>", on_key_press)
 
-# First update to display photos and initialize info
+# Update photos initially
 update_photos()
 
 # Start the GUI event loop
