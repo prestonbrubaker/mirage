@@ -61,7 +61,7 @@ photos_path = "photos"
 photos = [f for f in os.listdir(photos_path) if os.path.isfile(os.path.join(photos_path, f))]
 
 # Initialize info label and pack it first to be at the top
-info_label = tk.Label(root, text="Decisions made: 0, Elapsed time: 0.0 seconds", bg='light blue')
+info_label = tk.Label(root, text="Decisions made: 0, Elapsed time: 0.0 seconds", bg='white')
 info_label.pack(side="top", pady=(10, 20))
 
 # Create frames for each photo to manage padding/margins more effectively
@@ -73,10 +73,10 @@ left_frame.pack(side="left", fill="both", expand=True, padx=(500, 0))  # Margin 
 right_frame.pack(side="right", fill="both", expand=True, padx=(0, 500))  # Margin on the right
 
 # Initialize photo labels within the frames
-left_photo_label = tk.Label(left_frame, bg='grey')
+left_photo_label = tk.Label(left_frame, bg='black')
 left_photo_label.pack(fill="both", expand=True)
 
-right_photo_label = tk.Label(right_frame, bg='grey')
+right_photo_label = tk.Label(right_frame, bg='black')
 right_photo_label.pack(fill="both", expand=True)
 
 # Bind key press events
