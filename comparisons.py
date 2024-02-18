@@ -59,7 +59,7 @@ def on_key_press(event):
 # Initialize tkinter window
 root = tk.Tk()
 root.title("Choose a Photo: 'n' for left, 'm' for right")
-root.geometry("1200x1000")
+root.geometry("1500x1200")
 root.configure(bg='grey')
 
 # Load photos from the "photos" directory
@@ -68,14 +68,14 @@ photos = [f for f in os.listdir(photos_path) if os.path.isfile(os.path.join(phot
 
 # Initialize info label at the top
 info_label = tk.Label(root, text="Decisions made: 0, Elapsed time: 0.0 seconds", bg='white')
-info_label.pack(side="top", pady=(10, 20))
+info_label.pack(side="top", pady=(50, 20))
 
 # Create frames for each photo to manage padding/margins more effectively
 left_frame = tk.Frame(root, bg='grey')
 right_frame = tk.Frame(root, bg='grey')
 
-left_frame.pack(side="left", fill="both", expand=True, padx=(500, 50))  # Adjusted padding for better centering
-right_frame.pack(side="left", fill="both", expand=True, padx=(50, 500))  # Adjusted padding for better centering
+left_frame.pack(side="left", fill="both", expand=True, padx=(500, 5))  
+right_frame.pack(side="left", fill="both", expand=True, padx=(5, 500))
 
 # Initialize photo labels within the frames
 left_photo_label = tk.Label(left_frame, bg='grey')
