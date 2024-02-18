@@ -53,8 +53,8 @@ def on_key_press(event):
 # Initialize tkinter window
 root = tk.Tk()
 root.title("Choose a Photo: 'n' for left, 'm' for right")
-root.geometry("800x600")  # Example size, adjust as needed
-root.configure(bg='light blue')  # Example color
+root.geometry("1200x1000")
+root.configure(bg='grey')
 
 # Load photos from the "photos" directory
 photos_path = "photos"
