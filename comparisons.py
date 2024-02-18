@@ -65,18 +65,18 @@ info_label = tk.Label(root, text="Decisions made: 0, Elapsed time: 0.0 seconds",
 info_label.pack(side="top", pady=(10, 20))
 
 # Create frames for each photo to manage padding/margins more effectively
-left_frame = tk.Frame(root, bg='light blue')
-right_frame = tk.Frame(root, bg='light blue')
+left_frame = tk.Frame(root, bg='grey')
+right_frame = tk.Frame(root, bg='grey')
 
 # Pack frames with desired margins
 left_frame.pack(side="left", fill="both", expand=True, padx=(500, 0))  # Margin on the left
 right_frame.pack(side="right", fill="both", expand=True, padx=(0, 500))  # Margin on the right
 
 # Initialize photo labels within the frames
-left_photo_label = tk.Label(left_frame, bg='white')
+left_photo_label = tk.Label(left_frame, bg='grey')
 left_photo_label.pack(fill="both", expand=True)
 
-right_photo_label = tk.Label(right_frame, bg='white')
+right_photo_label = tk.Label(right_frame, bg='grey')
 right_photo_label.pack(fill="both", expand=True)
 
 # Bind key press events
