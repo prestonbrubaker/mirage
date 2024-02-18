@@ -74,8 +74,8 @@ info_label.pack(side="top", pady=(50, 20))
 left_frame = tk.Frame(root, bg='grey')
 right_frame = tk.Frame(root, bg='grey')
 
-left_frame.pack(side="left", fill="both", expand=True, padx=(400, 5))  
-right_frame.pack(side="left", fill="both", expand=True, padx=(5, 400))
+left_frame.pack(side="left", fill="both", expand=True, padx=(500, 0))  
+right_frame.pack(side="left", fill="both", expand=True, padx=(0, 500))
 
 # Initialize photo labels within the frames
 left_photo_label = tk.Label(left_frame, bg='grey')
