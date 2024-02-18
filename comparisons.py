@@ -4,6 +4,8 @@ import os
 import random
 import time
 
+it_C = 0
+
 def update_photos():
     global left_photo_label, right_photo_label, left_photo_name, right_photo_name
     selected_photos = random.sample(photos, 2)
@@ -28,7 +30,8 @@ def choose_photo(choice):
     """Append choice to ticker_tape.txt and update photos."""
     time_ep = time.time()
     with open("ticker_tape.txt", "a") as file:
-        file.write(f"{left_photo_name} {right_photo_name} {choice} {time_ep}{\n")
+        file.write(f"{left_photo_name} {right_photo_name} {choice} {time_ep} {it_C}{\n")
+    it_C += 1
     update_photos()
 
 def on_key_press(event):
