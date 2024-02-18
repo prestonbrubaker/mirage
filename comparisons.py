@@ -27,6 +27,7 @@ def update_photos():
     right_photo_label.image = right_photo  # Keep a reference!
 
 def choose_photo(choice):
+    global it_C
     """Append choice to ticker_tape.txt and update photos."""
     time_ep = time.time()
     with open("ticker_tape.txt", "a") as file:
