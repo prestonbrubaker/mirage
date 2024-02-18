@@ -31,7 +31,7 @@ def choose_photo(choice):
     """Append choice to ticker_tape.txt and update photos."""
     time_ep = time.time()
     with open("ticker_tape.txt", "a") as file:
-        file.write(f"{left_photo_name} {right_photo_name} {choice} {time_ep} {it_C}{\n")
+        file.write(f"{left_photo_name} {right_photo_name} {choice} {time_ep} {it_C}\n")
     it_C += 1
     update_photos()
 
