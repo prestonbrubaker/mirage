@@ -74,8 +74,8 @@ info_label.pack(side="top", pady=(10, 20))
 left_frame = tk.Frame(root, bg='grey')
 right_frame = tk.Frame(root, bg='grey')
 
-left_frame.pack(side="left", fill="both", expand=True, padx=(250, 10))  # Adjusted padding for better centering
-right_frame.pack(side="left", fill="both", expand=True, padx=(10, 250))  # Adjusted padding for better centering
+left_frame.pack(side="left", fill="both", expand=True, padx=(500, 50))  # Adjusted padding for better centering
+right_frame.pack(side="left", fill="both", expand=True, padx=(50, 500))  # Adjusted padding for better centering
 
 # Initialize photo labels within the frames
 left_photo_label = tk.Label(left_frame, bg='grey')
