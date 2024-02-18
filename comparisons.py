@@ -73,8 +73,8 @@ left_frame = tk.Frame(container_frame, bg='light blue')
 right_frame = tk.Frame(container_frame, bg='light blue')
 
 # Pack the photo frames with a specific gap
-left_frame.pack(side="left", fill="both", expand=True, padx=(10, 5))
-right_frame.pack(side="left", fill="both", expand=True, padx=(5, 10))
+left_frame.pack(side="left", fill="both", expand=True, padx=(1, 5))
+right_frame.pack(side="left", fill="both", expand=True, padx=(5, 1))
 
 # Initialize photo labels within the frames
 left_photo_label = tk.Label(left_frame, bg='grey')
