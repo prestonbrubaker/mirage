@@ -20,8 +20,8 @@ def on_key_press(event):
 root = tk.Tk()
 root.title("Choose a Photo")
 
-# Load and display two random photos from the "test_photos" directory
-photos_path = "test_photos"
+# Load and display two random photos from the "photos" directory
+photos_path = "photos"
 photos = [f for f in os.listdir(photos_path) if os.path.isfile(os.path.join(photos_path, f))]
 selected_photos = random.sample(photos, 2)
 
