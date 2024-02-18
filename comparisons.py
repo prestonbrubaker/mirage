@@ -2,6 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import os
 import random
+import time
 
 def update_photos():
     global left_photo_label, right_photo_label, left_photo_name, right_photo_name
@@ -25,8 +26,9 @@ def update_photos():
 
 def choose_photo(choice):
     """Append choice to ticker_tape.txt and update photos."""
+    time_ep = time.time()
     with open("ticker_tape.txt", "a") as file:
-        file.write(f"{left_photo_name} {right_photo_name} {choice}\n")
+        file.write(f"{left_photo_name} {right_photo_name} {choice} {time_ep}{\n")
     update_photos()
 
 def on_key_press(event):
