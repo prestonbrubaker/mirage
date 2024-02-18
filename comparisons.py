@@ -53,11 +53,7 @@ def on_key_press(event):
 # Initialize tkinter window
 root = tk.Tk()
 root.title("Choose a Photo: 'n' for left, 'm' for right")
-
-# Set window size
 root.geometry("800x600")
-
-# Customize background
 root.configure(bg='grey')
 
 # Load photos from the "photos" directory
@@ -68,13 +64,17 @@ photos = [f for f in os.listdir(photos_path) if os.path.isfile(os.path.join(phot
 info_label = tk.Label(root, text="Decisions made: 0, Elapsed time: 0.0 seconds", bg='grey')
 info_label.pack(side="top", pady=(10, 20))
 
-# Create frames for each photo to manage padding/margins more effectively
-left_frame = tk.Frame(root, bg='light blue')
-right_frame = tk.Frame(root, bg='light blue')
+# Create a container frame for photo frames
+container_frame = tk.Frame(root, bg='grey')
+container_frame.pack(expand=True, fill='both')
 
-# Pack frames with desired margins
+# Create frames for each photo within the container frame
+left_frame = tk.Frame(container_frame, bg='light blue')
+right_frame = tk.Frame(container_frame, bg='light blue')
+
+# Pack the photo frames with a specific gap
 left_frame.pack(side="left", fill="both", expand=True, padx=(10, 5))
-right_frame.pack(side="left", fill="both", expand=True, padx=(5, 10)) 
+right_frame.pack(side="left", fill="both", expand=True, padx=(5, 10))
 
 # Initialize photo labels within the frames
 left_photo_label = tk.Label(left_frame, bg='grey')
