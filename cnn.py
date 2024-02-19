@@ -73,12 +73,13 @@ test_dataloader = DataLoader(test_dataset, batch_size=4, shuffle=False)
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Using " + str(device))
 
 model = ScorePredictorCNN().to(device)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-num_epochs = 5  # Adjust as needed
+num_epochs = 20  # Adjust as needed
 
 def evaluate_test_set(model, dataloader, criterion, device):
     model.eval()  # Set the model to evaluation mode
@@ -109,6 +110,8 @@ for epoch in range(num_epochs):
     test_loss = evaluate_test_set(model, test_dataloader, criterion, device)
     
     print(f"Epoch {epoch+1}, Train Loss: {running_loss/len(train_dataloader)}, Test MSE: {test_loss}")
+    with open('model_history.txt', 'a') as file:
+        file.write(f"Epoch {epoch+1}, Train Loss: {running_loss/len(train_dataloader)}, Test MSE: {test_loss}")
 
 model_path = "score_predictor_model.pth"
 torch.save(model.state_dict(), model_path)
