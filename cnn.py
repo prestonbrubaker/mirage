@@ -54,6 +54,7 @@ class PhotoScoreDataset(Dataset):
         score = self.scores[img_name]
         if self.transform:
             image = self.transform(image)
+        score = torch.tensor(score, dtype=torch.float)
         return image, score
 
 transform = transforms.Compose([
