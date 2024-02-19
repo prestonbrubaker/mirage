@@ -64,6 +64,14 @@ transform = transforms.Compose([
 dataset = PhotoScoreDataset(images_folder="photos", scores_file="scores.txt", transform=transform)
 dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
 
+train_size = int(0.8 * len(dataset))
+test_size = len(dataset) - train_size
+train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
+
+train_dataloader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+test_dataloader = DataLoader(test_dataset, batch_size=4, shuffle=False)
+
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = ScorePredictorCNN().to(device)
@@ -72,9 +80,21 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 num_epochs = 5  # Adjust as needed
 
+def evaluate_test_set(model, dataloader, criterion, device):
+    model.eval()  # Set the model to evaluation mode
+    total_loss = 0
+    with torch.no_grad():  # No need to track gradients
+        for images, scores in dataloader:
+            images, scores = images.to(device), scores.to(device).view(-1, 1)
+            outputs = model(images)
+            loss = criterion(outputs, scores)
+            total_loss += loss.item()
+    return total_loss / len(dataloader)
+
 for epoch in range(num_epochs):
+    model.train()  # Set the model to training mode
     running_loss = 0.0
-    for images, scores in dataloader:
+    for images, scores in train_dataloader:
         images, scores = images.to(device), scores.to(device).view(-1, 1)
         
         optimizer.zero_grad()
@@ -86,6 +106,10 @@ for epoch in range(num_epochs):
         
         running_loss += loss.item()
     
-    print(f"Epoch {epoch+1}, Loss: {running_loss/len(dataloader)}")
+    test_loss = evaluate_test_set(model, test_dataloader, criterion, device)
+    
+    print(f"Epoch {epoch+1}, Train Loss: {running_loss/len(train_dataloader)}, Test MSE: {test_loss}")
 
-print("Finished Training")
+model_path = "score_predictor_model.pth"
+torch.save(model.state_dict(), model_path)
+print(f"Model saved to {model_path}")
