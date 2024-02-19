@@ -9,40 +9,38 @@ def adjust_and_calculate_scores():
             parts = line.strip().split()
             left_photo, right_photo, outcome = parts[0], parts[1], parts[2]
             
-            # Initialize entries in scores dictionary if not already present
+            # Ensure each photo is initialized in the dictionary
             if left_photo not in scores:
-                scores[left_photo] = {'wins': 0, 'losses': 1, 'appearances': 0}  # Start with an extra loss for adjustment
+                scores[left_photo] = {'wins': 0, 'losses': 0, 'appearances': 0}
             if right_photo not in scores:
-                scores[right_photo] = {'wins': 0, 'losses': 1, 'appearances': 0}  # Start with an extra loss for adjustment
+                scores[right_photo] = {'wins': 0, 'losses': 0, 'appearances': 0}
             
-            # Increment wins and losses according to the outcome
+            # Increment wins for the winner and losses for the loser
             if outcome == '0':
                 scores[left_photo]['wins'] += 1
+                scores[right_photo]['losses'] += 1
             else:
                 scores[right_photo]['wins'] += 1
+                scores[left_photo]['losses'] += 1
             
-            # Increment appearances
+            # Increment appearances for both photos
             scores[left_photo]['appearances'] += 1
             scores[right_photo]['appearances'] += 1
-            
-            # Adjust losses according to appearances
-            scores[left_photo]['losses'] += 1
-            scores[right_photo]['losses'] += 1
 
-    # Calculate adjusted average score for each photo
+    # Adjust scores and calculate the adjusted average score
     for photo in scores:
-        # Now considering the initial extra loss, adjust the score calculation
-        total_scores = scores[photo]['wins'] + scores[photo]['losses'] - scores[photo]['appearances']  # Subtract appearances since we added an extra loss initially
-        adjusted_score = scores[photo]['wins'] / total_scores if total_scores > 0 else 0
+        # Add a free win and adjust occurrences
+        scores[photo]['wins'] += 1
+        adjusted_occurrences = scores[photo]['appearances'] + 2  # Add 2 to adjust occurrences
+        # Calculate the adjusted score
+        adjusted_score = scores[photo]['wins'] / adjusted_occurrences
         scores[photo]['adjusted_score'] = adjusted_score
 
 adjust_and_calculate_scores()
 
-# Correctly write the adjusted outcomes to "scores.txt"
+# Write the adjusted scores to "scores.txt"
 with open("scores.txt", "w") as outfile:
     for photo, data in sorted(scores.items(), key=lambda x: x[1]['adjusted_score'], reverse=True):
-        # Ensure adjusted scores are properly calculated with the added loss
-        adjusted_score = (data['wins'] + 1) / (data['appearances'] + 1)  # +1 for the additional loss occurrence
-        outfile.write(f"{photo} {adjusted_score:.3f}\n")
+        outfile.write(f"{photo} {data['adjusted_score']:.3f}\n")
 
-print("Scores have been calculated and written to scores.txt.")
+print("Adjusted scores have been calculated and written to scores.txt.")
