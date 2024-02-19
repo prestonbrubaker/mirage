@@ -113,7 +113,7 @@ for epoch in range(num_epochs):
     print(f"Epoch {epoch+1}, Train Loss: {running_loss/len(train_dataloader)}, Test MSE: {test_loss}")
     with open('model_history.txt', 'a') as file:
         file.write(f"Epoch {epoch+1}, Train Loss: {running_loss/len(train_dataloader)}, Test MSE: {test_loss} \n")
-
-model_path = "score_predictor_model.pth"
-torch.save(model.state_dict(), model_path)
-print(f"Model saved to {model_path}")
+    if(epoch % 25 == 0):
+        model_path = "score_predictor_model.pth"
+        torch.save(model.state_dict(), model_path)
+        print(f"Model saved to {model_path}")
