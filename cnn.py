@@ -69,8 +69,8 @@ train_size = int(0.8 * len(dataset))
 test_size = len(dataset) - train_size
 train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-train_dataloader = DataLoader(train_dataset, batch_size=250, shuffle=True)
-test_dataloader = DataLoader(test_dataset, batch_size=250, shuffle=False)
+train_dataloader = DataLoader(train_dataset, batch_size=200, shuffle=True)
+test_dataloader = DataLoader(test_dataset, batch_size=200, shuffle=False)
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
