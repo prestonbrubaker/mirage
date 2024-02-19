@@ -80,3 +80,32 @@ output_file = "predicted_scores.txt"
 # Predict scores and save to file
 predict_scores(model_path, images_folder, output_file)
 print("Prediction completed. Scores are saved in 'predicted_scores.txt'.")
+
+
+def sort_predicted_scores(input_file, output_file=None):
+    # Use the same file for input and output if output_file is not specified
+    if output_file is None:
+        output_file = input_file
+    
+    # Read the predicted scores and their corresponding image names
+    with open(input_file, 'r') as file:
+        lines = file.readlines()
+        score_entries = [line.strip().split() for line in lines]
+    
+    # Convert scores to float for sorting
+    score_entries = [(entry[0], float(entry[1])) for entry in score_entries]
+    
+    # Sort entries based on scores in descending order
+    score_entries.sort(key=lambda x: x[1], reverse=True)
+    
+    # Write the sorted entries back to a file
+    with open(output_file, 'w') as file:
+        for img_name, score in score_entries:
+            file.write(f"{img_name} {score:.3f}\n")
+
+# Example usage
+input_file = "predicted_scores.txt"
+output_file = "sorted_predicted_scores.txt"  # Optional: specify if you want to write to a new file
+sort_predicted_scores(input_file, output_file)
+
+print(f"Entries in '{input_file}' have been sorted and saved to '{output_file}'.")
