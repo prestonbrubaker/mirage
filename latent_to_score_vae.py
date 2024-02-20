@@ -1,14 +1,16 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision import transforms
 from PIL import Image
 import os
 
 # Model Parameters
-latent_dim = 27  # Example latent space dimension
+latent_dim = 256  # Example latent space dimension
 LATENT_DIM = latent_dim
+
+
 
 class VariationalAutoencoder(nn.Module):
     def __init__(self, latent_dim):
