@@ -162,9 +162,9 @@ def train_predictor(model, train_dataloader, test_dataloader, optimizer, device,
 
         avg_loss = total_loss / len(train_dataloader)
         test_mse = test_predictor(model, test_dataloader, device)
-        print(f'Epoch {epoch+1}, Train MSE Loss: {avg_loss:.4f}, Test MSE: {test_mse:.4f}')
+        print(f'Epoch {epoch+1}, Train MSE Loss: {avg_loss:.6f}, Test MSE: {test_mse:.6f}')
         with open('latent_model_history.txt', 'a') as file:
-            file.write(f'Epoch {epoch+1}, Train MSE Loss: {avg_loss:.4f}, Test MSE: {test_mse:.4f} \n')
+            file.write(f'Epoch {epoch+1}, Train MSE Loss: {avg_loss:.6f}, Test MSE: {test_mse:.6f} \n')
 
         if(epoch % 25 == 0):
             save_path = 'latent_to_scores.pth'
