@@ -8,7 +8,7 @@ import os
 import numpy
 
 # Model Parameters
-latent_dim = 256
+latent_dim = 27 
 LATENT_DIM = latent_dim
 
 class VariationalAutoencoder(nn.Module):
@@ -72,50 +72,40 @@ class VariationalAutoencoder(nn.Module):
         z = self.reparameterize(mu, log_var)
         return self.decode(z), mu, log_var
 
-def loss_function(recon_x, target_x, mu, log_var):
-    BCE = nn.functional.binary_cross_entropy(recon_x, target_x, reduction='sum')
+def loss_function(recon_x, x, mu, log_var):
+    BCE = nn.functional.binary_cross_entropy(recon_x, x, reduction='sum')
     KLD = -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
     total_loss = BCE + KLD
     return BCE, KLD, total_loss
 
 
 
-
 # Custom Dataset
 class CustomDataset(Dataset):
-    def __init__(self, unsolved_folder_path, solved_folder_path, transform=None):
-        self.unsolved_file_list = [f for f in os.listdir(unsolved_folder_path) if os.path.isfile(os.path.join(unsolved_folder_path, f))]
-        self.unsolved_folder_path = unsolved_folder_path
-        self.solved_folder_path = solved_folder_path
+    def __init__(self, folder_path, transform=None):
+        self.file_list = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+        self.folder_path = folder_path
         self.transform = transform
 
     def __len__(self):
-        return len(self.unsolved_file_list)
+        return len(self.file_list)
 
     def __getitem__(self, idx):
-        unsolved_img_path = os.path.join(self.unsolved_folder_path, self.unsolved_file_list[idx])
-        solved_img_path = os.path.join(self.solved_folder_path, self.unsolved_file_list[idx].replace("_unsolved", ""))
-        
-        unsolved_image = Image.open(unsolved_img_path)
-        solved_image = Image.open(solved_img_path)
-        
+        img_path = os.path.join(self.folder_path, self.file_list[idx])
+        image = Image.open(img_path).convert('RGB')
         if self.transform:
-            unsolved_image = self.transform(unsolved_image)
-            solved_image = self.transform(solved_image)
-        
-        return unsolved_image, solved_image
-
+            image = self.transform(image)
+        return image
 
 def test_model(model, dataloader, device):
     model.eval()  # Set the model to evaluation mode
     mse_loss = nn.MSELoss(reduction='mean')
     total_mse = 0.0
     with torch.no_grad():  # No need to track gradients
-        for unsolved_img, solved_img in dataloader:
-            unsolved_img = unsolved_img.to(device)
-            solved_img = solved_img.to(device)
-            recon, _, _ = model(unsolved_img)
-            loss = mse_loss(recon, solved_img)  # Calculate loss against the solved image
+        for data in dataloader:
+            img = data.to(device)
+            recon, _, _ = model(img)
+            loss = mse_loss(recon, img)
             total_mse += loss.item()
 
     avg_mse = total_mse / len(dataloader)
@@ -138,19 +128,15 @@ transform = transforms.Compose([
 
 
 # Instantiate the dataset
-dataset = CustomDataset(unsolved_folder_path='photos_unsolved', solved_folder_path='photos', transform=transform)
-
+dataset = CustomDataset(folder_path='photos_2', transform=transform)
 
 # Dataset and Dataloader
 dataloader = DataLoader(dataset, batch_size=500, shuffle=True)
 
 
 # Dataset and Dataloader for test data
-test_dataset = CustomDataset(unsolved_folder_path='test_photos_unsolved',
-                             solved_folder_path='test_photos',
-                             transform=transform)
-
-test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)  
+test_dataset = CustomDataset(folder_path='test_photos', transform=transform)
+test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False) 
 
 
 # Instantiate VAE model with latent_dim
@@ -177,32 +163,27 @@ for epoch in range(num_epochs):
     total_bce_loss = 0
     total_kld_loss = 0
     total_loss = 0
-    all_mu = []
-    all_log_var = []
 
-    for unsolved_img, solved_img in dataloader:
-        unsolved_img = unsolved_img.to(device)
-        solved_img = solved_img.to(device)
+    for data in dataloader:
+        img = data.to(device)
 
         # Forward pass
-        recon_batch, mu, log_var = model(unsolved_img)
-
-        all_mu.extend(mu.tolist())
-        all_log_var.extend(log_var.tolist())
+        recon_batch, mu, log_var = model(img)
         
         # Calculate loss
-        BCE_loss, KLD_loss, loss = loss_function(recon_batch, solved_img, mu, log_var)
+        BCE_loss, KLD_loss, loss = loss_function(recon_batch, img, mu, log_var)
 
 
-        # Backward and optimize
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-        # Accumulate losses
+        # Accumulate losses for averaging
         total_bce_loss += BCE_loss.item()
         total_kld_loss += KLD_loss.item()
         total_loss += loss.item()
+
+        # Backward pass and optimize
+        optimizer.zero_grad()
+        loss.backward()
+        #torch.nn.utils.clip_grad_value_(model.parameters(), clip_value=0.5)
+        optimizer.step()
 
     # Average losses over the dataset
     avg_bce_loss = total_bce_loss / len(dataloader.dataset)
@@ -219,11 +200,6 @@ for epoch in range(num_epochs):
     if (epoch % 25 == 0 and epoch > 24):
         torch.save(model.state_dict(), f'variational_autoencoder.pth')
         print("Model Saved at Epoch: ", epoch)
-
-    # Calculate the mean of mu and log_var for the epoch
-    mean_mu = numpy.mean(numpy.array(all_mu), axis=0)
-    mean_log_var = numpy.mean(numpy.array(all_log_var), axis=0)
-
 
 # Save the final model
 torch.save(model.state_dict(), 'variational_autoencoder_final.pth')
