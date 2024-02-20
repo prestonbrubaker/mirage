@@ -164,6 +164,11 @@ def train_predictor(model, train_dataloader, test_dataloader, optimizer, device,
         test_mse = test_predictor(model, test_dataloader, device)
         print(f'Epoch [{epoch+1}/{num_epochs}], Train MSE Loss: {avg_loss:.4f}, Test MSE: {test_mse:.4f}')
 
+    # After the training loop, save the model
+    save_path = 'latent_to_scores.pth'
+    torch.save(model.state_dict(), save_path)
+    print(f"Model saved to {save_path}")
+
 
 
 
