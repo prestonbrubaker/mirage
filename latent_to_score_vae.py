@@ -188,8 +188,8 @@ train_size = int(0.8 * len(dataset))
 test_size = len(dataset) - train_size
 train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
 
-train_dataloader = DataLoader(train_dataset, batch_size=320, shuffle=True)
-test_dataloader = DataLoader(test_dataset, batch_size=320, shuffle=False)
+train_dataloader = DataLoader(train_dataset, batch_size=256, shuffle=True)
+test_dataloader = DataLoader(test_dataset, batch_size=256, shuffle=False)
 
 model = VAEScorePredictor(LATENT_DIM).to(device)
 for param in model.encoder.parameters():
