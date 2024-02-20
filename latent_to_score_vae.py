@@ -145,7 +145,7 @@ def test_predictor(model, dataloader, device):
 
 
 
-def train_predictor(model, train_dataloader, test_dataloader, optimizer, device, num_epochs=10):
+def train_predictor(model, train_dataloader, test_dataloader, optimizer, device, num_epochs):
     prediction_loss = nn.MSELoss()
 
     for epoch in range(num_epochs):
@@ -166,10 +166,10 @@ def train_predictor(model, train_dataloader, test_dataloader, optimizer, device,
         with open('latent_model_history.txt', 'a') as file:
             file.write(f'Epoch {epoch+1}, Train MSE Loss: {avg_loss:.4f}, Test MSE: {test_mse:.4f} \n')
 
-    # After the training loop, save the model
-    save_path = 'latent_to_scores.pth'
-    torch.save(model.state_dict(), save_path)
-    print(f"Model saved to {save_path}")
+        if(epoch % 25 == 0):
+            save_path = 'latent_to_scores.pth'
+            torch.save(model.state_dict(), save_path)
+            print(f"Model saved to {save_path}")
 
 
 
@@ -199,4 +199,4 @@ for param in model.decoder.parameters():
 
 optimizer = optim.Adam(model.predictor.parameters(), lr=0.001)
 
-train_predictor(model, train_dataloader, test_dataloader, optimizer, device, num_epochs=10)
+train_predictor(model, train_dataloader, test_dataloader, optimizer, device, num_epochs=1000)
