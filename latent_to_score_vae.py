@@ -79,9 +79,9 @@ class VAEScorePredictor(VariationalAutoencoder):
         
         # Predictor network
         self.predictor = nn.Sequential(
-            nn.Linear(latent_dim * 2, 1),  # Input from concatenated mu and log_var
-            #nn.ReLU(),
-            #nn.Linear(512, 256),
+            nn.Linear(latent_dim * 2, 512),  # Input from concatenated mu and log_var
+            nn.ReLU(),
+            nn.Linear(512, 1),
             #nn.ReLU(),
             #nn.Linear(256, 1),
             nn.Sigmoid()  # Output a value between 0 and 1
