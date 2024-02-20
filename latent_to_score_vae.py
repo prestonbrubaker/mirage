@@ -197,6 +197,6 @@ for param in model.encoder.parameters():
 for param in model.decoder.parameters():
     param.requires_grad = False
 
-optimizer = optim.Adam(model.predictor.parameters(), lr=0.001)
+optimizer = optim.Adam(model.predictor.parameters(), lr=0.01)
 
 train_predictor(model, train_dataloader, test_dataloader, optimizer, device, num_epochs=1000)
