@@ -7,7 +7,7 @@ from PIL import Image
 import os
 
 # Model Parameters
-latent_dim = 256  # Example latent space dimension
+latent_dim = 1024  # Example latent space dimension
 LATENT_DIM = latent_dim
 
 
@@ -16,19 +16,24 @@ class VariationalAutoencoder(nn.Module):
     def __init__(self, latent_dim):
         super(VariationalAutoencoder, self).__init__()
         self.latent_dim = latent_dim
-
-       # Encoder
+        # Encoder
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=4, stride=2, padding=1),  # Output: 16x128x128
+            nn.Conv2d(3, 16, kernel_size=4, stride=1, padding=1),  # Output: 16x256x256 (no size change due to padding)
             nn.ReLU(),
-            nn.Conv2d(16, 32, kernel_size=4, stride=2, padding=1),  # Output: 64x64x64
+            nn.Conv2d(16, 16, kernel_size=4, stride=2, padding=1),  # Output: 16x128x128 (downsampled)
             nn.ReLU(),
-            nn.Conv2d(32, 64, kernel_size=4, stride=2, padding=1),  # Output: 128x32x32
+            nn.Conv2d(16, 32, kernel_size=4, stride=1, padding=1),  # Output: 32x128x128 (no size change due to padding)
             nn.ReLU(),
-            nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1),  # Output: 256x16x16
+            nn.Conv2d(32, 32, kernel_size=4, stride=2, padding=1),  # Output: 32x64x64 (downsampled)
             nn.ReLU(),
-            nn.Flatten(),  # Flatten for linear layer input
-            nn.Linear(128*16*16, 1024),
+            nn.Conv2d(32, 64, kernel_size=4, stride=1, padding=1),  # Output: 64x64x64 (no size change due to padding)
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=4, stride=2, padding=1),  # Output: 64x32x32 (downsampled)
+            nn.ReLU(),
+            nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1),  # Output: 128x16x16 (downsampled)
+            nn.ReLU(),
+            nn.Flatten(),  # Flatten for linear layer input, output size: 128*16*16
+            nn.Linear(28800, 1024),  # Correct input size based on flattened output
             nn.ReLU()
         )
 
@@ -36,22 +41,27 @@ class VariationalAutoencoder(nn.Module):
         self.fc_log_var = nn.Linear(1024, latent_dim)
 
         # Decoder
-        self.decoder_input = nn.Linear(latent_dim, 1024)
-
         self.decoder = nn.Sequential(
-            nn.Linear(1024, 128*16*16),
-            nn.ReLU(),
-            nn.Unflatten(1, (128, 16, 16)),  # Unflatten to 256x16x16 for conv transpose input
-            nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),  # Output: 128x32x32
-            nn.ReLU(),
-            nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),  # Output: 64x64x64
-            nn.ReLU(),
-            nn.ConvTranspose2d(32, 16, kernel_size=4, stride=2, padding=1),  # Output: 32x128x128
-            nn.ReLU(),
-            nn.ConvTranspose2d(16, 3, kernel_size=4, stride=2, padding=1),  # Output: 1x256x256
-            nn.Sigmoid()
-        )
+        nn.Linear(latent_dim, 1024),  # Maps latent vector to suitable size
+        nn.ReLU(),
+        nn.Linear(1024, 128 * 16 * 16),  # Adjusts size for reshaping
+        nn.ReLU(),
+        nn.Unflatten(1, (128, 16, 16)),  # Reshapes to 3D volume for convolutions
+        nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),
+        nn.ReLU(),
+        nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),
+        nn.ReLU(),
+        # Adjust the following layers based on the calculated output sizes to ensure the final output is 256x256
+        nn.ConvTranspose2d(32, 16, kernel_size=4, stride=2, padding=1),
+        nn.ReLU(),
+        nn.ConvTranspose2d(16, 3, kernel_size=4, stride=2, padding=1, output_padding=0),  # Final layer to produce the output
+        nn.Sigmoid(),  # Ensures pixel values are between [0, 1]
+    )
 
+
+
+
+    
     def encode(self, x):
         x = self.encoder(x)
         mu = self.fc_mu(x)
@@ -64,8 +74,7 @@ class VariationalAutoencoder(nn.Module):
         return mu + eps * std
 
     def decode(self, z):
-        x = self.decoder_input(z)
-        x = self.decoder(x)
+        x = self.decoder(z)  # Directly feed z into the decoder
         return x
 
     def forward(self, x):
