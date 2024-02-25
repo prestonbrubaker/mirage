@@ -40,22 +40,25 @@ class VariationalAutoencoder(nn.Module):
         self.fc_log_var = nn.Linear(1024, latent_dim)
 
         # Decoder
-        self.decoder_input = nn.Linear(latent_dim, 1024)
-        
         self.decoder = nn.Sequential(
         nn.Linear(latent_dim, 1024),
         nn.ReLU(),
-        nn.Linear(1024, 128*16*16),
+        nn.Linear(1024, 128 * 16 * 16),
         nn.ReLU(),
         nn.Unflatten(1, (128, 16, 16)),
-        nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),  # Upsample
+        # Upsampling to match the encoder's downsampled sizes, adjusting parameters to ensure final size is 256x256
+        nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),
         nn.ReLU(),
-        nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1, output_padding=1),  # Adjusted for correct upsample size
+        nn.ConvTranspose2d(64, 64, kernel_size=4, stride=2, padding=1),
         nn.ReLU(),
-        nn.ConvTranspose2d(32, 16, kernel_size=4, stride=2, padding=1),  # Upsample
+        # Adjusting this layer might be necessary to correct the output size
+        nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1, output_padding=1), 
         nn.ReLU(),
-        nn.ConvTranspose2d(16, 3, kernel_size=4, stride=2, padding=1, output_padding=1),  # Adjusted for correct final size
-        nn.Sigmoid(),
+        nn.ConvTranspose2d(32, 16, kernel_size=4, stride=2, padding=1),
+        nn.ReLU(),
+        # Final layer to produce the output with the correct channel number and size
+        nn.ConvTranspose2d(16, 3, kernel_size=4, stride=2, padding=1, output_padding=0),  # Adjusted for correct final size
+        nn.Sigmoid(),  # Ensure pixel values are between [0, 1]
     )
 
 
