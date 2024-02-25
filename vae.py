@@ -35,7 +35,7 @@ class VariationalAutoencoder(nn.Module):
         nn.Flatten(),  # Flatten for linear layer input
         nn.Linear(28800, 1024),
         nn.ReLU()
-    )
+        )
 
 
         self.fc_mu = nn.Linear(1024, latent_dim)
@@ -43,25 +43,24 @@ class VariationalAutoencoder(nn.Module):
 
         # Decoder
         self.decoder_input = nn.Linear(latent_dim, 1024)
-
+        
         self.decoder = nn.Sequential(
-            nn.Linear(1024, 128*16*16),
-            nn.ReLU(),
-            nn.Unflatten(1, (128, 16, 16)),  # Unflatten to 256x16x16 for conv transpose input
-            nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),  # Output: 128x32x32
-            nn.ReLU(),
-            nn.ConvTranspose2d(64, 32, kernel_size=4, stride=1, padding=1),  # Output: 64x32x32
-            nn.ReLU(),
-            nn.ConvTranspose2d(32, 32, kernel_size=4, stride=2, padding=1),  # Output: 64x64x64
-            nn.ReLU(),
-            nn.ConvTranspose2d(32, 16, kernel_size=4, stride=1, padding=1),  # Output: 32x64x64
-            nn.ReLU(),
-            nn.ConvTranspose2d(16, 16, kernel_size=4, stride=2, padding=1),  # Output: 32x128x128
-            nn.ReLU(),
-            nn.ConvTranspose2d(16, 3, kernel_size=4, stride=2, padding=1),  # Output: 1x256x256
-            nn.Sigmoid()
-        )
-
+        nn.Linear(1024, 128*16*16),
+        nn.ReLU(),
+        nn.Unflatten(1, (128, 16, 16)),  # Unflatten to 128x16x16 for conv transpose input
+        nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),  # Upsample to 64x32x32
+        nn.ReLU(),
+        nn.ConvTranspose2d(64, 64, kernel_size=4, stride=2, padding=1),  # Upsample to 64x64x64
+        nn.ReLU(),
+        nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),  # Upsample to 32x128x128
+        nn.ReLU(),
+        nn.ConvTranspose2d(32, 32, kernel_size=4, stride=2, padding=1),  # Upsample to 32x256x256
+        nn.ReLU(),
+        nn.ConvTranspose2d(32, 16, kernel_size=4, stride=1, padding=1),  # Adjust to maintain 256x256, if necessary
+        nn.ReLU(),
+        nn.ConvTranspose2d(16, 3, kernel_size=4, stride=1, padding=1),  # Output: 3x256x256
+        nn.Sigmoid()  # Ensure pixel values are between [0, 1]
+    )
     def encode(self, x):
         x = self.encoder(x)
         mu = self.fc_mu(x)
