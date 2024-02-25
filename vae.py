@@ -18,24 +18,25 @@ class VariationalAutoencoder(nn.Module):
 
        # Encoder
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=4, stride=1, padding=1),  # Output: 16x256x256
-            nn.ReLU(),
-            nn.Conv2d(16, 16, kernel_size=4, stride=2, padding=1),  # Output: 16x128x128
-            nn.ReLU(),
-            nn.Conv2d(16, 32, kernel_size=4, stride=1, padding=1),  # Output: 64x128x128
-            nn.ReLU(),
-            nn.Conv2d(32, 32, kernel_size=4, stride=2, padding=1),  # Output: 64x64x64
-            nn.ReLU(),
-            nn.Conv2d(32, 64, kernel_size=4, stride=1, padding=1),  # Output: 128x64x64
-            nn.ReLU(),
-            nn.Conv2d(64, 64, kernel_size=4, stride=2, padding=1),  # Output: 128x32x32
-            nn.ReLU(),
-            nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1),  # Output: 256x16x16
-            nn.ReLU(),
-            nn.Flatten(),  # Flatten for linear layer input
-            nn.Linear(256*16*16, 1024),
-            nn.ReLU()
-        )
+        nn.Conv2d(3, 16, kernel_size=4, stride=1, padding=1),  # Output: 16x256x256
+        nn.ReLU(),
+        nn.Conv2d(16, 16, kernel_size=4, stride=2, padding=1),  # Output: 16x128x128
+        nn.ReLU(),
+        nn.Conv2d(16, 32, kernel_size=4, stride=1, padding=1),  # Output: 32x128x128
+        nn.ReLU(),
+        nn.Conv2d(32, 32, kernel_size=4, stride=2, padding=1),  # Output: 32x64x64
+        nn.ReLU(),
+        nn.Conv2d(32, 64, kernel_size=4, stride=1, padding=1),  # Output: 64x64x64
+        nn.ReLU(),
+        nn.Conv2d(64, 64, kernel_size=4, stride=2, padding=1),  # Output: 64x32x32
+        nn.ReLU(),
+        nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1),  # Output: 128x16x16
+        nn.ReLU(),
+        nn.Flatten(),  # Flatten for linear layer input
+        nn.Linear(128*16*16, 1024),
+        nn.ReLU()
+    )
+
 
         self.fc_mu = nn.Linear(1024, latent_dim)
         self.fc_log_var = nn.Linear(1024, latent_dim)
