@@ -33,7 +33,7 @@ class VariationalAutoencoder(nn.Module):
             nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1),  # Output: 256x16x16
             nn.ReLU(),
             nn.Flatten(),  # Flatten for linear layer input
-            nn.Linear(128*16*16, 1024),
+            nn.Linear(256*16*16, 1024),
             nn.ReLU()
         )
 
