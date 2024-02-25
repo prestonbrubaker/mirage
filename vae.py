@@ -43,21 +43,21 @@ class VariationalAutoencoder(nn.Module):
         self.decoder_input = nn.Linear(latent_dim, 1024)
         
         self.decoder = nn.Sequential(
-            nn.Linear(1024, 128*16*16),
-            nn.ReLU(),
-            nn.Unflatten(1, (128, 16, 16)),  # Unflatten to 128x16x16 for conv transpose input
-            nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),  # Upsample to 64x32x32
-            nn.ReLU(),
-            nn.ConvTranspose2d(64, 64, kernel_size=4, stride=2, padding=1),  # Upsample to 64x64x64
-            nn.ReLU(),
-            nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),  # Upsample to 32x128x128
-            nn.ReLU(),
-            nn.ConvTranspose2d(32, 32, kernel_size=4, stride=2, padding=1),  # Upsample to 32x256x256
-            nn.ReLU(),
-            # Remove unnecessary layers to directly match the final output size
-            nn.ConvTranspose2d(32, 3, kernel_size=4, stride=1, padding=1),  # Output: 3x256x256, corrected to match input
-            nn.Sigmoid()  # Ensure pixel values are between [0, 1]
-        )
+        nn.Linear(latent_dim, 1024),
+        nn.ReLU(),
+        nn.Linear(1024, 128*16*16),
+        nn.ReLU(),
+        nn.Unflatten(1, (128, 16, 16)),
+        nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),  # Upsample
+        nn.ReLU(),
+        nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1, output_padding=1),  # Adjusted for correct upsample size
+        nn.ReLU(),
+        nn.ConvTranspose2d(32, 16, kernel_size=4, stride=2, padding=1),  # Upsample
+        nn.ReLU(),
+        nn.ConvTranspose2d(16, 3, kernel_size=4, stride=2, padding=1, output_padding=1),  # Adjusted for correct final size
+        nn.Sigmoid(),
+    )
+
 
 
     
