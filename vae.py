@@ -41,21 +41,20 @@ class VariationalAutoencoder(nn.Module):
 
         # Decoder
         self.decoder = nn.Sequential(
-        nn.Linear(latent_dim, 1024),
+        nn.Linear(latent_dim, 1024),  # Maps latent vector to suitable size
         nn.ReLU(),
-        nn.Linear(1024, 128*16*16),
+        nn.Linear(1024, 128 * 16 * 16),  # Adjusts size for reshaping
         nn.ReLU(),
-        nn.Unflatten(1, (128, 16, 16)),
+        nn.Unflatten(1, (128, 16, 16)),  # Reshapes to 3D volume for convolutions
         nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),
         nn.ReLU(),
-        nn.ConvTranspose2d(64, 64, kernel_size=4, stride=2, padding=1),
+        nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),
         nn.ReLU(),
-        nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1, output_padding=1),
-        nn.ReLU(),
+        # Adjust the following layers based on the calculated output sizes to ensure the final output is 256x256
         nn.ConvTranspose2d(32, 16, kernel_size=4, stride=2, padding=1),
         nn.ReLU(),
-        nn.ConvTranspose2d(16, 3, kernel_size=4, stride=2, padding=1, output_padding=0),  # Critical adjustment here
-        nn.Sigmoid(),
+        nn.ConvTranspose2d(16, 3, kernel_size=4, stride=2, padding=1, output_padding=0),  # Final layer to produce the output
+        nn.Sigmoid(),  # Ensures pixel values are between [0, 1]
     )
 
 
