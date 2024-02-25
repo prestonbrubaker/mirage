@@ -76,9 +76,8 @@ class VariationalAutoencoder(nn.Module):
         return mu + eps * std
 
     def decode(self, z):
-        x = self.decoder_input(z)
-        x = self.decoder(x)
-        return x
+        x = self.decoder(z)  # Directly feed z into the decoder
+    return x
 
     def forward(self, x):
         mu, log_var = self.encode(x)
