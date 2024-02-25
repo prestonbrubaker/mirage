@@ -77,7 +77,7 @@ class VariationalAutoencoder(nn.Module):
 
     def decode(self, z):
         x = self.decoder(z)  # Directly feed z into the decoder
-    return x
+        return x
 
     def forward(self, x):
         mu, log_var = self.encode(x)
