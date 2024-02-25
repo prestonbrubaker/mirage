@@ -18,11 +18,17 @@ class VariationalAutoencoder(nn.Module):
 
        # Encoder
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=4, stride=2, padding=1),  # Output: 16x128x128
+            nn.Conv2d(3, 16, kernel_size=4, stride=1, padding=1),  # Output: 16x256x256
             nn.ReLU(),
-            nn.Conv2d(16, 32, kernel_size=4, stride=2, padding=1),  # Output: 64x64x64
+            nn.Conv2d(16, 16, kernel_size=4, stride=2, padding=1),  # Output: 16x128x128
             nn.ReLU(),
-            nn.Conv2d(32, 64, kernel_size=4, stride=2, padding=1),  # Output: 128x32x32
+            nn.Conv2d(16, 32, kernel_size=4, stride=1, padding=1),  # Output: 64x128x128
+            nn.ReLU(),
+            nn.Conv2d(32, 32, kernel_size=4, stride=2, padding=1),  # Output: 64x64x64
+            nn.ReLU(),
+            nn.Conv2d(32, 64, kernel_size=4, stride=1, padding=1),  # Output: 128x64x64
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=4, stride=2, padding=1),  # Output: 128x32x32
             nn.ReLU(),
             nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1),  # Output: 256x16x16
             nn.ReLU(),
@@ -43,9 +49,13 @@ class VariationalAutoencoder(nn.Module):
             nn.Unflatten(1, (128, 16, 16)),  # Unflatten to 256x16x16 for conv transpose input
             nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),  # Output: 128x32x32
             nn.ReLU(),
-            nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),  # Output: 64x64x64
+            nn.ConvTranspose2d(64, 32, kernel_size=4, stride=1, padding=1),  # Output: 64x32x32
             nn.ReLU(),
-            nn.ConvTranspose2d(32, 16, kernel_size=4, stride=2, padding=1),  # Output: 32x128x128
+            nn.ConvTranspose2d(32, 32, kernel_size=4, stride=2, padding=1),  # Output: 64x64x64
+            nn.ReLU(),
+            nn.ConvTranspose2d(32, 16, kernel_size=4, stride=1, padding=1),  # Output: 32x64x64
+            nn.ReLU(),
+            nn.ConvTranspose2d(16, 16, kernel_size=4, stride=2, padding=1),  # Output: 32x128x128
             nn.ReLU(),
             nn.ConvTranspose2d(16, 3, kernel_size=4, stride=2, padding=1),  # Output: 1x256x256
             nn.Sigmoid()
